@@ -24,6 +24,13 @@ class PatientsTransformer extends TransformerAbstract
                 'tooltip' => 'Düzenle',
                 'required_permission' => 'patient_update',
             ],
+
+            'copy' => [
+                'url' => route('patient.edit', [$patient->id]),
+                'icon_class' => 'far fa-copy',
+                'tooltip' => 'Kopyala',
+                'required_permission' => 'patient_update',
+            ],
             'vaccines' => [
                 'url' => route('patient.vaccines', [$patient->id]),
                 'icon_class' => 'fas fa-syringe',
@@ -51,6 +58,7 @@ class PatientsTransformer extends TransformerAbstract
             'village' => [
                 'name' => $patient->village->name ?? null
             ],
+            'positive_or_contacted' => '',
             'patientStatus' => [
                 'name' => $patient->patientStatus->name ?? null
             ],

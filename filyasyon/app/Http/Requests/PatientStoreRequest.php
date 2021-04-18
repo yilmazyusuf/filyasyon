@@ -43,7 +43,10 @@ class PatientStoreRequest extends FormRequest
             'health_personnel_profession_id' => 'required_if:is_health_personnel,1',
             'contact_origin_patient_id' => 'required_if:contact_origin_id,1',
             'relationship_to_main_case_id' => 'required_if:contact_origin_id,1',
-            'healing_date' => 'required_if:patient_status_id,1,2,3,4,7|nullable|date_format:d/m/Y'
+            'healing_date' => 'required_if:patient_status_id,1,2,3,4,7|nullable|date_format:d/m/Y',
+            'pcr_status' => 'required_without:contacted_status',
+            'contacted_status' => 'required_without:pcr_status',
+
         ];
     }
 
@@ -79,6 +82,8 @@ class PatientStoreRequest extends FormRequest
             'ex_date.date' => 'Geçersiz tarih.',
             'healing_date.required_if' => 'İyileşme tarihi beliritiniz.',
             'healing_date.healing_date' => 'Geçersiz tarih.',
+            'pcr_status.required_without' => 'PCR veya Temasli seciniz',
+            'contacted_status.required_without' => 'PCR veya Temasli seciniz',
         ];
     }
 }

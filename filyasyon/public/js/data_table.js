@@ -139,7 +139,7 @@ let DataTable = {
                 {"data": "age", "orderable": true, "searchable": false},
                 {"data": "gsm", "orderable": false, "searchable": true},
                 {"data": "village.name", "name": "village.name", "orderable": true, "searchable": true},
-                {"data": "patientStatus.name", "name": "patientStatus.name", "orderable": true, "searchable": true},
+                {"data": "positive_or_contacted", "name": "positive_or_contacted", "orderable": true, "searchable": true},
                 {"data": "patientStatus.name", "name": "patientStatus.name", "orderable": true, "searchable": true},
                 {"data": "dailyChecks.check_date", "name": "dailyChecks.check_date", "orderable": true, "searchable": true},
                 {"data": "vaccines.last_vaccines_date", "name": "vaccines.last_vaccines_date", "orderable": true, "searchable": true},

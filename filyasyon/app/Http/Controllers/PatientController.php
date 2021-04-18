@@ -81,8 +81,19 @@ class PatientController extends Controller
         $archive->archive = json_encode($patient);
         $archive->save();
 
-        $is_health_personnel = $request->is_health_personnel ?? false;
-        $request->request->set('is_health_personnel', $is_health_personnel);
+        $isHealthPersonnel = $request->is_health_personnel ?? false;
+        $request->request->set('is_health_personnel', $isHealthPersonnel);
+
+        $hasMutation = $request->has_mutation ?? false;
+        $request->request->set('has_mutation', $hasMutation);
+
+        $pcrStatus = $request->pcr_status ?? false;
+        $request->request->set('pcr_status', $pcrStatus);
+
+        $contactedStatus = $request->contacted_status ?? false;
+        $request->request->set('contacted_status', $contactedStatus);
+
+
         $patient->fill($request->all());
         $patient->save();
 

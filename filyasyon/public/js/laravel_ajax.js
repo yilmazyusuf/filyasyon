@@ -316,6 +316,8 @@ var factory = function () {
             var $span = formGroup.find('.'+laravel.getErrorMessageClass());
             if ($span.length == 0) {
                 $span = $('<span class="animated fadeIn '+laravel.getErrorMessageClass() +'"></span>');
+                if(formGroup.hasClass('bootstrap-switch-container') === true){
+                }
                 formGroup.append($span);
             }
             $span.text(errors.join(', '));

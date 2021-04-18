@@ -28,6 +28,9 @@
         $('#tckn').inputmask("99999999999", {"clearIncomplete": true})
 
         $("#is_health_personnel").bootstrapSwitch();
+        $("#has_mutation").bootstrapSwitch();
+        $("#pcr_status").bootstrapSwitch();
+        $("#contacted_status").bootstrapSwitch();
 
 
 
@@ -81,18 +84,31 @@
 
 
             $('#is_health_personnel').on('switchChange.bootstrapSwitch', function (event, state) {
-
                 //Selected
                 if(event.selected != 'undefined'){
                     if(event.selected == 1){
                         state =  true;
                     }
                 }
-
                 if (state === true) {
                     $('.health_personnel_profession_id_row').removeClass('d-none');
                 } else {
                     $('.health_personnel_profession_id_row').addClass('d-none');
+                }
+            });
+
+
+            $('#pcr_status').on('switchChange.bootstrapSwitch', function (event, state) {
+                //Selected
+                if(event.selected != 'undefined'){
+                    if(event.selected == 1){
+                        state =  true;
+                    }
+                }
+                if (state === true) {
+                    $('.has_mutation_id_row').removeClass('d-none');
+                } else {
+                    $('.has_mutation_id_row').addClass('d-none');
                 }
             });
 
@@ -247,8 +263,33 @@
                                     <textarea class="form-control" name="address" id="address"></textarea>
                                 </div>
                             </div>
+
                         </div>
                         <div class="col-md-6">
+                            <div class="form-group row">
+                                <label for="contacted_status" class="col-sm-5 col-form-label">TEMASLI</label>
+                                <div class="col-sm-7">
+                                    <input type="checkbox" id="contacted_status" name="contacted_status"
+                                           data-on-text="Evet" data-off-text="Hayir" data-on-color="success"
+                                           data-off-color="danger" value="1" {{$patient->contacted_status ?'checked':0}}>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="pcr_status" class="col-sm-5 col-form-label">PCR</label>
+                                <div class="col-sm-7">
+                                    <input type="checkbox" id="pcr_status" name="pcr_status"
+                                           data-on-text="Pozitif" data-off-text="Negatif" data-on-color="success"
+                                           data-off-color="danger" value="1" {{$patient->pcr_status ?'checked':''}}>
+                                </div>
+                            </div>
+                            <div class="form-group row  has_mutation_id_row d-none">
+                                <label for="has_mutation" class="col-sm-5 col-form-label">Mutasyon</label>
+                                <div class="col-sm-7">
+                                    <input type="checkbox" id="has_mutation" name="has_mutation"
+                                           data-on-text="Evet" data-off-text="Hayır" data-on-color="success"
+                                           data-off-color="danger" value="1" {{$patient->has_mutation ?'checked':''}}>
+                                </div>
+                            </div>
                             <div class="form-group row">
                                 <label for="contact_place_id" class="col-sm-5 col-form-label">Temas Yeri</label>
                                 <div class="col-sm-7">

@@ -7,7 +7,7 @@
     <!-- DataTables -->
     <script src="{{ asset('vendor/adminlte/plugins/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('vendor/adminlte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('js/data_table.js?v=2') }}"></script>
+    <script src="{{ asset('js/data_table.js?v=4') }}"></script>
     <script>
         DataTable.getPatients('{{route('patient.index.data_table')}}');
     </script>
@@ -53,7 +53,7 @@
                                 <th>Yaş</th>
                                 <th>Telefon</th>
                                 <th>Mahalle</th>
-                                <th>Mahalle</th>
+                                <th>Poz.-Tem.</th>
                                 <th>Durumu</th>
                                 <th>Son Denetim</th>
                                 <th>Son Aşı</th>
