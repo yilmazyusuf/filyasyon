@@ -57,8 +57,6 @@ RUN apt-get update && \
 RUN sed -i -e 's/# tr_TR.UTF-8 UTF-8/tr_TR.UTF-8 UTF-8/' /etc/locale.gen && \
     dpkg-reconfigure --frontend=noninteractive locales
 
-
-
 RUN a2enmod rewrite
 RUN service apache2 restart
 

@@ -58,16 +58,19 @@ class PatientsTransformer extends TransformerAbstract
             'village' => [
                 'name' => $patient->village->name ?? null
             ],
-            'positive_or_contacted' => '',
+            'positive_or_contacted' => $patient->pcr_status ? 'P': ($patient->contacted_status ? 'T' : '-'),
             'patientStatus' => [
-                'name' => $patient->patientStatus->name ?? null
+                'name' => $patient->patientStatus->name ?? null,
+                'id' => $patient->patientStatus->id ?? null
             ],
+
             'dailyChecks' => [
                 'check_date' => $lastCheckDate
             ],
             'vaccines' => [
                 'last_vaccines_date' => $vaccinesLast->vaccination_date ?? null
             ],
+            'quarantine_dates' => $patient->quarantine_dates,
             'action' => (string)$template = view()->make('adminlte::partials.btn_group', ['buttons' => $actionButtons])->render()
         ];
     }

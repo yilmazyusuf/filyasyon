@@ -7,7 +7,7 @@
     <!-- DataTables -->
     <script src="{{ asset('vendor/adminlte/plugins/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('vendor/adminlte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('js/data_table.js?v=4') }}"></script>
+    <script src="{{ asset('js/data_table.js?v=7') }}"></script>
     <script>
         DataTable.getPatients('{{route('patient.index.data_table')}}');
     </script>
@@ -23,6 +23,17 @@
     <!-- SweetAlert2 -->
     <link rel="stylesheet"
           href="{{ asset('vendor/adminlte/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
+    <style>
+        .table-bordered td, .table-bordered th {
+            border: 1px solid rgb(51 59 63 / 30%) !important;
+        }
+
+        .table td, .table th {
+
+             border-top: none !important;
+             border-left: none !important;
+        }
+    </style>
 @endpush
 @section('content')
 
@@ -57,6 +68,7 @@
                                 <th>Durumu</th>
                                 <th>Son Denetim</th>
                                 <th>Son Aşı</th>
+                                <th>Karantina</th>
                                 <th>#</th>
                             </tr>
                             </thead>

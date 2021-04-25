@@ -14,7 +14,7 @@ class Patient extends Model
     protected static $flushCacheOnUpdate = true;
 
     protected $guarded = [];
-    protected $dates = ['detection_date', 'ex_date', 'healing_date'];
+    protected $dates = ['detection_date', 'ex_date', 'healing_date', 'quarantine_start_date', 'quarantine_end_date'];
 
 
     public function patientStatus()
@@ -34,7 +34,7 @@ class Patient extends Model
 
     public function latestDailyCheck()
     {
-        return $this->dailyChecks()->orderBy('check_date','desc')->first();
+        return $this->dailyChecks()->orderBy('check_date', 'desc')->first();
     }
 
     public function vaccines()
@@ -102,6 +102,13 @@ class Patient extends Model
         return Carbon::createFromDate($value)->format('d/m/Y');
     }
 
+    public function getQuarantineDatesAttribute()
+    {
+
+        return Carbon::parse($this->quarantine_start_date)->formatLocalized('%d %B') . ' - ' .
+            Carbon::parse($this->quarantine_end_date)->formatLocalized('%d %B');
+    }
+
     public function getExDateAttribute($value)
     {
         return Carbon::createFromDate($value)->format('d/m/Y');
@@ -110,6 +117,42 @@ class Patient extends Model
     public function getHealingDateAttribute($value)
     {
         return Carbon::createFromDate($value)->format('d/m/Y');
+    }
+
+
+    public function getQuarantinePeriodAttribute()
+    {
+        $startDate = Carbon::parse($this->quarantine_start_date);
+        $endDate = Carbon::parse($this->quarantine_end_date);
+        $periodDays = $endDate->diffInDays($startDate);
+
+        return $periodDays;
+    }
+
+
+    public function getQuarantinePeriodToEndAttribute()
+    {
+        $startDate = Carbon::now();
+        $endDate = Carbon::parse($this->quarantine_end_date)->addDays(1);
+        return $startDate->diffInDays($endDate,false);
+    }
+
+
+    public function getQuarantinePeriodCurrentPercentAttribute()
+    {
+        $totalDays = $this->quarantinePeriod;
+        $remainingDays = $this->quarantinePeriodToEnd;
+        if($remainingDays <= 0){
+            return 100;
+        }
+
+        return ($totalDays - $remainingDays) * 100 / $totalDays;
+    }
+
+    public function getIsQuarantineCompletedAttribute(): bool
+    {
+        $endDate = Carbon::parse($this->quarantine_end_date);
+        return $endDate->lessThan(Carbon::now());
     }
 
 
@@ -166,8 +209,8 @@ class Patient extends Model
 
         $today = date('Y-m-d');
         $todaysChecks = $this->dailyChecks()
-            ->where('check_date','LIKE','%'.$today.'%')
-            ->orderBy('check_date','desc')
+            ->where('check_date', 'LIKE', '%' . $today . '%')
+            ->orderBy('check_date', 'desc')
             ->get()
             ->toArray();
 

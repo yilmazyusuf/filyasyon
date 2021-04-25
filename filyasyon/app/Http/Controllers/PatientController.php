@@ -15,7 +15,6 @@ use Carbon\Carbon;
 use Garavel\Utils\Ajax;
 use Garavel\ViewComposers\FlashMessageViewComposer;
 use Illuminate\Contracts\Support\Renderable;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
 class PatientController extends Controller
@@ -75,26 +74,37 @@ class PatientController extends Controller
             abort(404);
         }
 
+        $extendQuarantinaPeriodDays = $request->get('extended_qurantine_end_days');
         $archive = new PatientArchive();
         $archive->patient_id = $patient->id;
         $archive->user_id = auth()->id();
         $archive->archive = json_encode($patient);
         $archive->save();
 
-        $isHealthPersonnel = $request->is_health_personnel ?? false;
-        $request->request->set('is_health_personnel', $isHealthPersonnel);
-
-        $hasMutation = $request->has_mutation ?? false;
-        $request->request->set('has_mutation', $hasMutation);
-
+        $detectionDateRequest = $request->get('detection_date');
         $pcrStatus = $request->pcr_status ?? false;
-        $request->request->set('pcr_status', $pcrStatus);
-
         $contactedStatus = $request->contacted_status ?? false;
+        $hasMutation = $request->has_mutation ?? false;
+        $isHealthPersonnel = $request->is_health_personnel ?? false;
+
+        $detectionDate = Carbon::createFromFormat('d/m/Y', $detectionDateRequest);
+        $quarantineEndDate = $detectionDate->copy()->addDays($patient->quarantinePeriod);
+
+        if (!is_null($extendQuarantinaPeriodDays) && $extendQuarantinaPeriodDays > 0) {
+            $quarantineEndDate->addDays($extendQuarantinaPeriodDays);
+        }
+
+
+        $request->request->set('quarantine_start_date', $detectionDate->format('Y-m-d'));
+        $request->request->set('quarantine_end_date', $quarantineEndDate->format('Y-m-d'));
+
+        $request->request->set('is_health_personnel', $isHealthPersonnel);
+        $request->request->set('has_mutation', $hasMutation);
+        $request->request->set('pcr_status', $pcrStatus);
         $request->request->set('contacted_status', $contactedStatus);
 
-
-        $patient->fill($request->all());
+        $requestData = $request->except(['extended_qurantine_end_days']);
+        $patient->fill($requestData);
         $patient->save();
 
         $ajax = new Ajax();
@@ -108,6 +118,25 @@ class PatientController extends Controller
         $patientModel = new Patient();
         $request->request->set('city_id', 43);
         $request->request->set('town_id', 1132);
+        $detectionDate = $request->get('detection_date');
+        $pcrStatus = $request->request->get('pcr_status');
+        $contactedStatus = $request->request->get('contacted_status');
+
+
+        /*
+        PCR 7 Gun Karantina Suresi
+        Temasli 10 Gun Karantina
+        */
+        $now = Carbon::now();
+        $quarantinePeriod = $pcrStatus ? 7 : 10;
+        $quarantineStartDate = $now;
+        if ($detectionDate) {
+            $quarantineStartDate = Carbon::createFromFormat('d/m/Y', $detectionDate);
+        }
+        $quarantineEndDate = $quarantineStartDate->copy()->addDays($quarantinePeriod);
+        $request->request->set('quarantine_start_date', $quarantineStartDate->format('Y-m-d H:i:s'));
+        $request->request->set('quarantine_end_date', $quarantineEndDate->format('Y-m-d H:i:s'));
+
         $patientModel->fill($request->all());
         $patientModel->save();
 
@@ -139,7 +168,7 @@ class PatientController extends Controller
             )->userPatientsByVillage();
 
         if (request()->has('order') === false) {
-            $patients = $patients->orderBy('updated_at', 'desc');
+            $patients = $patients->orderByRaw("FIELD(patient_status_id,1,2,3,4,5,6,7,8)");
         }
 
         return datatables()->of($patients->get())

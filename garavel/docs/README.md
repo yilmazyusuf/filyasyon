@@ -168,5 +168,5 @@ Auth::routes([
     'reset'    => false, // Password Reset Routes...
     'verify'   => false, // Email Verification Routes...
 ]);
-
-
+AppServiceProver
+setlocale(LC_TIME, 'tr_TR.utf8');

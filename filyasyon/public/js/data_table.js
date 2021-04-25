@@ -143,10 +143,22 @@ let DataTable = {
                 {"data": "patientStatus.name", "name": "patientStatus.name", "orderable": true, "searchable": true},
                 {"data": "dailyChecks.check_date", "name": "dailyChecks.check_date", "orderable": true, "searchable": true},
                 {"data": "vaccines.last_vaccines_date", "name": "vaccines.last_vaccines_date", "orderable": true, "searchable": true},
+                {"data": "quarantine_dates", "name": "quarantine_dates", "orderable": true, "searchable": true},
                 {"data": "action", "orderable": false, "searchable": false},
             ],
             "initComplete": function (settings, json) {
 
+            },
+            "createdRow": function(row, data, dataIndex) {
+                var patient_status = data.patientStatus.id;
+                if (patient_status == 7) {
+                    $(row).css("background-color", "rgb(61 153 112 / 20%)");
+                }
+                else if (patient_status == 8) {
+                    $(row).css("background-color", "rgb(220 53 69 / 20%)");
+                }else {
+                    $(row).css("background-color", "rgb(255 193 7 / 20%)");
+                }
             }
         });
 

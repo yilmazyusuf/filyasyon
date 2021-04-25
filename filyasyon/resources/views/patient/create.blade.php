@@ -19,9 +19,9 @@
     <script src="{{ asset('vendor/adminlte/plugins/bootstrap-switch/js/bootstrap-switch.min.js') }}"></script>
 
     <script>
-        $('#detection_date').inputmask("99/99/9999", {"clearIncomplete": true})
+        $('#detection_date').inputmask("99/99/2021", {"clearIncomplete": true})
         $('#ex_date').inputmask("99/99/9999", {"clearIncomplete": true})
-        $('#healing_date').inputmask("99/99/9999", {"clearIncomplete": true})
+        $('#healing_date').inputmask("99/99/2021", {"clearIncomplete": true})
         $('#gsm').inputmask("0(999) 999 9999", {"clearIncomplete": true})
         $('#age').inputmask("99", {"clearIncomplete": true})
         $('#tckn').inputmask("99999999999", {"clearIncomplete": true})
@@ -42,11 +42,27 @@
         $('#pcr_status').on('switchChange.bootstrapSwitch', function (event, state) {
             if (state === true) {
                 $('.has_mutation_id_row').removeClass('d-none');
+                $('#contacted_status').bootstrapSwitch('state', false, false);
+
             } else {
                 $('.has_mutation_id_row').addClass('d-none');
+                $('#contacted_status').bootstrapSwitch('state', true, false);
+
             }
         });
-
+        $('#contacted_status').on('switchChange.bootstrapSwitch', function (event, state) {
+            //Selected
+            if(event.selected != 'undefined'){
+                if(event.selected == 1){
+                    state =  true;
+                }
+            }
+            if (state === true) {
+                $('#pcr_status').bootstrapSwitch('state', false, false);
+            } else {
+                $('#pcr_status').bootstrapSwitch('state', true, false);
+            }
+        });
         $('select#contact_origin_id').on('select2:select', function (e) {
             var data = e.params.data;
             if (data.id == 1) {
@@ -194,21 +210,17 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group row">
-                                <label for="contacted_status" class="col-sm-5 col-form-label">TEMASLI</label>
+                                <label for="contacted_status" class="col-sm-5 col-form-label">TEMASLI / PCR</label>
                                 <div class="col-sm-7">
                                     <input type="checkbox" id="contacted_status" name="contacted_status"
                                            data-on-text="Evet" data-off-text="Hayir" data-on-color="success"
-                                           data-off-color="danger" value="1">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="pcr_status" class="col-sm-5 col-form-label">PCR</label>
-                                <div class="col-sm-7">
+                                           data-off-color="danger" value="1" checked>
                                     <input type="checkbox" id="pcr_status" name="pcr_status"
                                            data-on-text="Pozitif" data-off-text="Negatif" data-on-color="success"
                                            data-off-color="danger" value="1">
                                 </div>
                             </div>
+
                             <div class="form-group row has_mutation_id_row d-none">
                                 <label for="has_mutation" class="col-sm-5 col-form-label">Mutasyon</label>
                                 <div class="col-sm-7">

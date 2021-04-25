@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Patient;
 use Illuminate\Foundation\Http\FormRequest;
 
-class PatientUpdateRequest extends FormRequest {
+class PatientUpdateRequest extends FormRequest
+{
 
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +27,7 @@ class PatientUpdateRequest extends FormRequest {
     {
         return [
             'name' => 'required',
-            'tckn' => 'required|unique:patients,tckn,'.$this->route('patient'),
+            'tckn' => 'required|unique:patients,tckn,' . $this->route('patient'),
             'age' => 'required',
             'gsm' => 'required',
             'detection_date' => 'required|date_format:d/m/Y',
@@ -42,9 +44,12 @@ class PatientUpdateRequest extends FormRequest {
             'health_personnel_profession_id' => 'required_if:is_health_personnel,1',
             'contact_origin_patient_id' => 'required_if:contact_origin_id,1',
             'relationship_to_main_case_id' => 'required_if:contact_origin_id,1',
-            'healing_date' => 'required_if:patient_status_id,1,2,3,4,7|nullable|date_format:d/m/Y',
+            'healing_date' => 'required_if:patient_status_id,7|nullable|date_format:d/m/Y',
             'pcr_status' => 'required_without:contacted_status',
+            //'pcr_status' => 'prohibited_if:contacted_status,1',
             'contacted_status' => 'required_without:pcr_status',
+            //'contacted_status' => 'prohibited_if:pcr_status,1',
+
         ];
     }
 
@@ -82,6 +87,35 @@ class PatientUpdateRequest extends FormRequest {
             'healing_date.healing_date' => 'Geçersiz tarih.',
             'pcr_status.required_without' => 'PCR veya Temasli seciniz',
             'contacted_status.required_without' => 'PCR veya Temasli seciniz',
+            'pcr_status.prohibited_if' => 'Temasli evet sectiniz, PCR negatif secilmeli',
+            'contacted_status.prohibited_if' => 'PCR pozitif sectiniz, temasli hayir secilmeli',
         ];
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $patientId = $this->route('patient');
+            $patient = Patient::find($patientId);
+
+            if (!$patient) {
+                abort(404);
+            }
+
+            $patientStatusId = $this->get('patient_status_id');
+            $extendedQurantineEndDays = $this->get('extended_qurantine_end_days');
+            if ($extendedQurantineEndDays && $patientStatusId == 8) {
+                $validator->errors()->add('extended_qurantine_end_days', 'EX kisinin karantina suresini uzatamazsiniz');
+            }
+
+            if ($extendedQurantineEndDays && $patientStatusId == 7) {
+                $validator->errors()->add('extended_qurantine_end_days', 'Iyilesmis hastanin karantina suresini uzatamazsiniz');
+            }
+
+            if ($patientStatusId == 7 && $patient->isQuarantineCompleted === false) {
+                $validator->errors()->add('patient_status_id', 'Karantinasi bitmeyen hastayi iyilesti secemezsiniz.');
+            }
+
+        });
     }
 }
