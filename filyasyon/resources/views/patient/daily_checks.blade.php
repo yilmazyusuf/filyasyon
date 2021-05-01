@@ -127,8 +127,30 @@
                     <div class="form-group row mb-0" style="">
 
                         <div class="col-sm-12 ">
-                            <button type="submit" class="btn btn-dark ajax_btn">Denetimleri Kaydet</button>
-                            <a href="{{route('patient.index')}}" class="btn btn-default">İptal Et</a>
+
+                            @if($patient->patient_status_id == 7)
+                                <div class="callout callout-danger">
+                                    <h5>Hasta, iyilesti</h5>
+
+                                    <p>Hasta iyilestigi ve karantina suresini doldurdugu icin yeni denetim girisi
+                                        yapilamaz.</p>
+                                </div>
+                            @elseif($patient->patient_status_id == 6)
+                                <div class="callout callout-danger">
+                                    <h5>Hasta, Hastanede</h5>
+                                    <p>Hastanin tedavisi hastanede devam ettigi icin denetim girisi yapilamaz</p>
+                                </div>
+                            @elseif($patient->patient_status_id == 8)
+                                <div class="callout callout-danger">
+                                    <h5>Hasta, Vefat Etti</h5>
+                                    <p>Hasta vefat ettigi icin denetim girilemez</p>
+                                </div>
+                            @else
+                                <button type="submit" class="btn btn-dark ajax_btn">Denetimleri Kaydet</button>
+                                <a href="{{route('patient.index')}}" class="btn btn-default">İptal Et</a>
+                            @endif
+
+
                         </div>
                     </div>
 

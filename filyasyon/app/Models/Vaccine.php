@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Vaccine extends Model
 {
     protected $dates = ['vaccination_date'];
-
+    protected $casts = [
+        'vaccination_date' => 'datetime:d/m/Y',
+    ];
 
     public function setVaccinationDateAttribute($date)
     {

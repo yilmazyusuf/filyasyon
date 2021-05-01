@@ -128,7 +128,7 @@ class PatientController extends Controller
         Temasli 10 Gun Karantina
         */
         $now = Carbon::now();
-        $quarantinePeriod = $pcrStatus ? 7 : 10;
+        $quarantinePeriod = $pcrStatus ? 10 : 10;
         $quarantineStartDate = $now;
         if ($detectionDate) {
             $quarantineStartDate = Carbon::createFromFormat('d/m/Y', $detectionDate);
@@ -150,22 +150,7 @@ class PatientController extends Controller
     public function indexDataTable(Request $request)
     {
 
-        $patients = Patient::cacheFor(now()->addDays(1))
-            ->with([
-                    'patientStatus' => function ($query) {
-                        return $query
-                            ->cacheFor(now()->addDays(1));
-                    },
-                    'village' => function ($query) {
-                        return $query
-                            ->cacheFor(now()->addDays(1));
-                    },
-                    'dailyChecks' => function ($query) {
-                        return $query
-                            ->cacheFor(now()->addDays(1));
-                    }
-                ]
-            )->userPatientsByVillage();
+        $patients = Patient::with(['patientStatus', 'village', 'dailyChecks'])->userPatientsByVillage();
 
         if (request()->has('order') === false) {
             $patients = $patients->orderByRaw("FIELD(patient_status_id,1,2,3,4,5,6,7,8)");

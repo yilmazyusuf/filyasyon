@@ -7,7 +7,7 @@
     <!-- DataTables -->
     <script src="{{ asset('vendor/adminlte/plugins/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('vendor/adminlte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('js/data_table.js?v=7') }}"></script>
+    <script src="{{ asset('js/data_table.js?v=9') }}"></script>
     <script>
         DataTable.getPatients('{{route('patient.index.data_table')}}');
     </script>

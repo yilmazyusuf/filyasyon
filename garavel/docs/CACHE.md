@@ -43,3 +43,23 @@ Taggable `use Rennokki\QueryCache\Traits\QueryCacheable;`
     }])->get();                    
 
 
+##### Ralational Sample
+````
+  $patients = Patient::cacheFor(now()->addDays(1))
+            ->with([
+                    'patientStatus' => function ($query) {
+                        return $query
+                            ->cacheFor(now()->addDays(1));
+                    },
+                    'village' => function ($query) {
+                        return $query
+                            ->cacheFor(now()->addDays(1));
+                    },
+                    'dailyChecks' => function ($query) {
+                        return $query
+                            ->cacheFor(now()->addDays(1));
+                    }
+                ]
+            )->userPatientsByVillage();
+
+````

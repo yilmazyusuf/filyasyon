@@ -154,6 +154,9 @@ let DataTable = {
                 if (patient_status == 7) {
                     $(row).css("background-color", "rgb(61 153 112 / 20%)");
                 }
+                else if (patient_status == 6) {
+                    $(row).css("background-color", "rgb(253 126 20 / 20%)");
+                }
                 else if (patient_status == 8) {
                     $(row).css("background-color", "rgb(220 53 69 / 20%)");
                 }else {

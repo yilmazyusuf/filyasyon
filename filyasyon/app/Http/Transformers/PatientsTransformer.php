@@ -47,6 +47,8 @@ class PatientsTransformer extends TransformerAbstract
             ]
         ];
 
+
+
         $lastCheckDate = $patient->latestDailyCheck() ? Carbon::parse($patient->latestDailyCheck()->check_date)->format('d/m/Y H:i') : null;
         $vaccinesLast = $patient->vaccines()->orderBy('vaccination_date','desc')->first();
 

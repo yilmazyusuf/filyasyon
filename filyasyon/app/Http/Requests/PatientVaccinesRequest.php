@@ -24,7 +24,9 @@ class PatientVaccinesRequest extends FormRequest {
     public function rules()
     {
         return [
-            'vaccines.0' => 'required',
+            'vaccines.0' => 'date_format:d/m/Y|before_or_equal:today',
+            'vaccines.1' => 'nullable|date_format:d/m/Y|before_or_equal:today',
+            'vaccines.2' => 'nullable|date_format:d/m/Y|before_or_equal:today',
         ];
     }
 
@@ -37,7 +39,10 @@ class PatientVaccinesRequest extends FormRequest {
     public function messages()
     {
         return [
-            'vaccines.0.required' => '1. Asi tarihini giriniz.',
+            'vaccines.0.date_format' => 'Asi tarihini giriniz.',
+            'vaccines.0.before_or_equal' => 'Ileri tarihli asi giremezsiniz.',
+            'vaccines.1.before_or_equal' => 'Ileri tarihli asi giremezsiniz.',
+            'vaccines.2.before_or_equal' => 'Ileri tarihli asi giremezsiniz.',
         ];
     }
 }

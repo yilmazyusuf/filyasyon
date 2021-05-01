@@ -170,3 +170,6 @@ Auth::routes([
 ]);
 AppServiceProver
 setlocale(LC_TIME, 'tr_TR.utf8');
+
+
+

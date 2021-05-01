@@ -76,8 +76,16 @@
                     <div class="form-group row mb-0" style="">
 
                         <div class="col-sm-12 ">
-                            <button type="submit" class="btn btn-dark ajax_btn">Asi Bilgilerini Kaydet</button>
-                            <a href="{{route('patient.index')}}" class="btn btn-default">İptal Et</a>
+                           @if($patient->patient_status_id == 8)
+                                <div class="callout callout-danger">
+                                    <h5>Hasta, Vefat Etti</h5>
+                                    <p>Hasta vefat ettigi icin asi bilgisi girilemez</p>
+                                </div>
+                            @else
+                                <button type="submit" class="btn btn-dark ajax_btn">Asi Bilgilerini Kaydet</button>
+                                <a href="{{route('patient.index')}}" class="btn btn-default">İptal Et</a>
+                            @endif
+
                         </div>
                     </div>
 
