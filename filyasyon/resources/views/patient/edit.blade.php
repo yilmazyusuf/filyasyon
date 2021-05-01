@@ -294,7 +294,7 @@
                             <div class="form-group row mb-0" style="float: right">
 
                                 <div class="col-sm-12 ">
-                                    <button type="submit" class="btn btn-dark ajax_btn">Hasta Güncelle</button>
+                                    <button type="submit" class="btn btn-dark ajax_btn">Güncelle</button>
                                     <a href="{{route('patient.index')}}" class="btn btn-default">İptal Et</a>
                                 </div>
                             </div>
@@ -451,7 +451,7 @@
                             <div class="form-group row mb-0" style="float: right">
 
                                 <div class="col-sm-12 ">
-                                    <button type="submit" class="btn btn-dark ajax_btn">Hasta Güncelle</button>
+                                    <button type="submit" class="btn btn-dark ajax_btn">Güncelle</button>
                                     <a href="{{route('patient.index')}}" class="btn btn-default">İptal Et</a>
                                 </div>
                             </div>

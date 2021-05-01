@@ -37,6 +37,25 @@ class Patient extends Model
         return $this->dailyChecks()->orderBy('check_date', 'desc')->first();
     }
 
+    public function isDailyCheckable() : bool
+    {
+        $checkBlockerPatientStatusses = [
+            6, 7, 8
+        ];
+        return !in_array($this->patient_status_id, $checkBlockerPatientStatusses);
+    }
+
+    public function dailyCheckableBlockedMessage() : string
+    {
+        $checkBlockerPatientStatusses = [
+            6 => 'Hastanin tedavisi hastanede devam ediyor.',
+            7 => 'Hasta iyilesti.',
+            8 => 'Hasta vefat etti.'
+        ];
+        return $checkBlockerPatientStatusses[$this->patient_status_id] ?? 'Hastaya denetim girilebilir.';
+    }
+
+
     public function vaccines()
     {
         return $this->hasMany(Vaccine::class);
@@ -134,7 +153,7 @@ class Patient extends Model
     {
         $startDate = Carbon::now();
         $endDate = Carbon::parse($this->quarantine_end_date)->addDays(1);
-        return $startDate->diffInDays($endDate,false);
+        return $startDate->diffInDays($endDate, false);
     }
 
 
@@ -142,7 +161,7 @@ class Patient extends Model
     {
         $totalDays = $this->quarantinePeriod;
         $remainingDays = $this->quarantinePeriodToEnd;
-        if($remainingDays <= 0){
+        if ($remainingDays <= 0) {
             return 100;
         }
 

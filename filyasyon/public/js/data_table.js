@@ -107,7 +107,7 @@ let DataTable = {
         });
     },
     getPatients: function (ajaxUrl) {
-        var patients_table = $("#roles_data_table").DataTable({
+        var patients_table = $("#patients_data_table").DataTable({
             "oLanguage": {
                 "sUrl": this.getLanguageFileUrl()
             },
@@ -117,7 +117,7 @@ let DataTable = {
             responsive: true,
             bAutoWidth: false,
             "dom": 'frtip',
-            "pageLength": 30,
+            "pageLength": 50,
             "searchDelay": 1500,
             "processing": true,
             "serverSide": true,
@@ -150,6 +150,8 @@ let DataTable = {
 
             },
             "createdRow": function(row, data, dataIndex) {
+                $(row).attr('patient_id', data.patient_id);
+
                 var patient_status = data.patientStatus.id;
                 if (patient_status == 7) {
                     $(row).css("background-color", "rgb(61 153 112 / 20%)");

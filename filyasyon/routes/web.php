@@ -30,6 +30,10 @@ Route::middleware(['auth'])->group(function ()
     Route::get('/patient/{id}/daily_checks', 'PatientController@dailyChecks')->name('patient.daily_checks');
     Route::post('/patient/{id}/daily_checks', 'PatientController@saveDailyChecks')->name('patient.daily_checks.save');
 
+    Route::get('/patients/daily_checks/{patientIds}', 'PatientController@batchDailyChecks')->name('patient.batch_daily_checks');
+    Route::post('/patients/daily_checks/{patientIds}', 'PatientController@saveBatchDailyChecks')->name('patient.batch_daily_checks.save');
+
+
     Route::get('/patient/{id}/vaccines', 'PatientController@vaccines')->name('patient.vaccines');
     Route::post('/patient/{id}/vaccines', 'PatientController@saveVaccines')->name('patient.vaccines.save');
 

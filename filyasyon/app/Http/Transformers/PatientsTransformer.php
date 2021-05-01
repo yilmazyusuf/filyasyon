@@ -53,6 +53,7 @@ class PatientsTransformer extends TransformerAbstract
         $vaccinesLast = $patient->vaccines()->orderBy('vaccination_date','desc')->first();
 
         return [
+            'patient_id' => (string)$patient->id,
             'name' => (string)$patient->name,
             'tckn' => (int)$patient->tckn,
             'age' => (int)$patient->age,

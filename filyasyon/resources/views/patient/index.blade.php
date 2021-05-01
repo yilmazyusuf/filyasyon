@@ -9,7 +9,57 @@
     <script src="{{ asset('vendor/adminlte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('js/data_table.js?v=9') }}"></script>
     <script>
-        DataTable.getPatients('{{route('patient.index.data_table')}}');
+
+        $(document).ready(function () {
+            DataTable.getPatients('{{route('patient.index.data_table')}}');
+
+            //Tek tek hasta seciliyor
+            $('#patients_data_table tbody').on('click', 'tr', function () {
+                $(this).toggleClass('selected');
+                setStateForDailyChecksButton();
+            });
+
+            //Tumunu sec butonuna tiklandi
+            $('button.patients_select').on('click', function () {
+                $('#patients_data_table tbody tr').addClass('selected');
+                setStateForDailyChecksButton();
+            });
+
+            //Secimi kaldir butonuna tiklandi
+            $('button.patients_unselect').on('click', function () {
+                $('#patients_data_table tbody tr').removeClass('selected');
+                setStateForDailyChecksButton();
+            });
+
+            //Toplu Secim butonu aktof veya pasif yapiliyor
+            function setStateForDailyChecksButton() {
+                @can('daily_checks')
+                if ($('#patients_data_table tbody tr.selected').length >= 2) {
+                    $('button.batch_daily_checks').prop('disabled', false)
+                } else {
+                    $('button.batch_daily_checks').prop('disabled', true)
+                }
+                @endcan
+            }
+
+            $('button.batch_daily_checks').on('click',function (){
+
+                var patient_ids = $.map($("#patients_data_table tbody tr.selected"), function(li) {
+                    return $(li).attr("patient_id");
+                });
+
+                if(patient_ids.length >=2 ){
+                    var patientIds = patient_ids.join(",");
+                    var redirect_url = '{!! route('patient.batch_daily_checks',[':patientIds']) !!}';
+                    redirect_url = redirect_url.replace(':patientIds', patientIds);
+                    window.location.href = redirect_url
+                }
+
+            });
+
+
+        });
+
     </script>
     <!-- SweetAlert2 -->
     <script src="{{ asset('vendor/adminlte/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
@@ -30,8 +80,20 @@
 
         .table td, .table th {
 
-             border-top: none !important;
-             border-left: none !important;
+            border-top: none !important;
+            border-left: none !important;
+        }
+
+        table.dataTable tbody tr.selected {
+            background-color: rgb(60 141 188 / 20%) !important;
+        }
+
+        table.dataTable tbody tr:hover {
+            background-color: rgb(60 141 188 / 20%) !important;
+        }
+
+        table.dataTable tbody tr {
+            cursor: pointer;
         }
     </style>
 @endpush
@@ -55,7 +117,27 @@
                         </div>
                     </div>
                     <div class="card-body table-responsive">
-                        <table id="roles_data_table"
+
+                        <div class="btn-group" role="group" aria-label="Select, Unselect Patients">
+                            <button type="button" class="btn btn btn-default btn-sm  btn-flat patients_select"><i
+                                    class="fas fa-check-circle"></i> Tümünü Seç
+                            </button>
+                            <button type="button" class="btn btn-default btn-sm  btn-flat patients_unselect"><i
+                                    class="far fa-check-circle"></i> Seçimleri Kaldır
+                            </button>
+                        </div>
+
+                        <div class="btn-group" role="group" aria-label="Select, Unselect Patients">
+
+                            @can('daily_checks')
+                                <button type="button" class="btn btn-dark btn-sm btn-flat batch_daily_checks" disabled>
+                                    <i class="fa fas fa-user-check"></i> Toplu Denetim Ekle
+                                </button>
+                            @endcan
+                        </div>
+
+
+                        <table id="patients_data_table"
                                class="table table-bordered table-striped table-hover  table-head-fixed text-nowrap">
                             <thead>
                             <tr>
@@ -74,6 +156,14 @@
                             </thead>
                             <tbody></tbody>
                         </table>
+                        <div class="btn-group" role="group" aria-label="Select, Unselect Patients">
+                            <button type="button" class="btn btn btn-default btn-flat patients_select"><i
+                                    class="fas fa-check-circle"></i> Tümünü Seç
+                            </button>
+                            <button type="button" class="btn btn-default btn-flat patients_unselect"><i
+                                    class="far fa-check-circle"></i> Seçimleri Kaldır
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

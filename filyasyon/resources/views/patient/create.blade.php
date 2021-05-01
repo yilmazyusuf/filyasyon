@@ -349,8 +349,8 @@
                     <div class="form-group row mb-0" style="float: right">
 
                         <div class="col-sm-12 ">
-                            <button type="submit" class="btn btn-dark ajax_btn">Hasta Kaydet</button>
-                            <button type="submit" class="btn btn-info ajax_btn">Hasta Kaydet Ve Kopyala</button>
+                            <button type="submit" class="btn btn-dark ajax_btn">Kaydet</button>
+                            <button type="submit" class="btn btn-info ajax_btn">Kaydet Ve Kopyala</button>
                             <a href="{{route('patient.index')}}" class="btn btn-default">İptal Et</a>
                         </div>
                     </div>

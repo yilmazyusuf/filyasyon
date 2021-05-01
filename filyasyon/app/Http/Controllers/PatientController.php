@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use Garavel\Utils\Ajax;
 use Garavel\ViewComposers\FlashMessageViewComposer;
 use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
 class PatientController extends Controller
@@ -218,6 +219,48 @@ class PatientController extends Controller
 
     }
 
+
+    public function batchDailyChecks($patientIds)
+    {
+
+        //@todo id ler icin bolge yetki kontrolu
+        $patientIds = explode(',',$patientIds);
+        $patients = Patient::whereIn('id',$patientIds)->get();
+
+        return view('patient.daily_checks_batch', ['patients' => $patients]);
+
+    }
+
+
+    public function saveBatchDailyChecks($patientIds, PatientChecklistRequest $request){
+        //@todo id ler icin bolge yetki kontrolu
+        $patientIds = explode(',',$patientIds);
+        $patients = Patient::whereIn('id',$patientIds)->get();
+        $today = date('Y-m-d');
+        foreach ($patients as $patient){
+            if($patient->isDailyCheckable()){
+                $patient->dailyChecks()->where('check_date', 'LIKE', '%' . $today . '%')->delete();
+                $checks = [];
+                foreach ($request->get('check_hour') as $hour) {
+
+                    if (is_null($hour)) {
+                        continue;
+                    }
+                    $dailyCheck = new DailyCheck();
+                    $dailyCheck->check_date = $today . ' ' . $hour . ':00';
+                    $dailyCheck->user_id = auth()->user()->id;
+                    $checks[] = $dailyCheck;
+                }
+                $patient->dailyChecks()->saveMany($checks);
+            }
+        }
+
+        $ajax = new Ajax();
+        $request->session()->flash(FlashMessageViewComposer::MESSAGE_SUCCESS, 'Hastalarin denetimleri güncellendi.');
+
+        return $ajax->redirect(route('patient.index'));
+    }
+
     public function saveDailyChecks($patientId, PatientChecklistRequest $request)
     {
         $patient = Patient::find($patientId);
@@ -238,6 +281,8 @@ class PatientController extends Controller
             $dailyCheck->user_id = auth()->user()->id;
             $checks[] = $dailyCheck;
         }
+
+        //@todo isDailyCheckable()
         $patient->dailyChecks()->saveMany($checks);
 
 

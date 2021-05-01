@@ -20,8 +20,6 @@
 
     <script>
         $('.check_hour').inputmask("99:99", {"clearIncomplete": true})
-
-
     </script>
 @endpush
 @push('styles')
@@ -29,6 +27,30 @@
     <link rel="stylesheet" href="{{ asset('vendor/adminlte/plugins/select2/css/select2.min.css') }}">
     <link rel="stylesheet"
           href="{{ asset('vendor/adminlte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+
+    <style>
+        .table-bordered td, .table-bordered th {
+            border: 1px solid rgb(51 59 63 / 30%) !important;
+        }
+
+        .table td, .table th {
+
+            border-top: none !important;
+            border-left: none !important;
+        }
+
+        table.dataTable tbody tr.selected {
+            background-color: rgb(60 141 188 / 20%) !important;
+        }
+
+        table.dataTable tbody tr:hover {
+            background-color: rgb(60 141 188 / 20%) !important;
+        }
+
+        table.dataTable tbody tr {
+            cursor: pointer;
+        }
+    </style>
 @endpush
 @section('content')
     <!-- Content Wrapper. Contains page content -->
@@ -50,14 +72,11 @@
                         <i class="fas fa-times"></i></button>
                 </div>
             </div>
-            <form class="form-horizontal ajax" action="{{route('patient.daily_checks.save',[$patient->id])}}"
+            @php
+            @endphp
+            <form class="form-horizontal ajax" action="{{url()->full()}}"
                   method="post">
                 <div class="card-body">
-
-                    @php
-                        $todaysChecks = $patient->todaysChecks()
-                    @endphp
-
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group row">
@@ -91,28 +110,19 @@
                                    class="table table-bordered table-striped table-hover  table-head-fixed text-nowrap">
                                 <thead>
                                 <tr>
-                                    <th>Tarih</th>
-                                    <th>1. Denetim</th>
-                                    <th>2. Denetim</th>
-                                    <th>3. Denetim</th>
+                                    <th>Hasta</th>
+                                    <th>TC</th>
+                                    <th>Son Denetim</th>
+                                    <th>Bilgi</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-
-                                @foreach($patient->groupDailyCheckByHour()  as $checkDate => $checkHour)
-                                    @php
-                                        $checkHours = collect($checkHour);
-                                        $checkHours = $checkHours->sort()->toArray();
-                                        $checkHours = array_values($checkHours);
-
-                                    @endphp
-
-                                    <tr>
-                                        <td>{{date('d/m/Y',strtotime($checkDate))}}</td>
-                                        <td>{{isset($checkHours[0]) ? \Carbon\Carbon::parse($checkHours[0])->format('H:i') : ''}}</td>
-                                        <td>{{isset($checkHours[1]) ? \Carbon\Carbon::parse($checkHours[1])->format('H:i') : ''}}</td>
-                                        <td>{{isset($checkHours[2]) ? \Carbon\Carbon::parse($checkHours[2])->format('H:i') : ''}}</td>
-
+                                @foreach($patients as $patient)
+                                    <tr style="background-color: @if($patient->isDailyCheckable()) rgb(61 153 112 / 20%) @else rgb(220 53 69 / 20%) @endif">
+                                        <td>{{$patient->name}}</td>
+                                        <td>{{$patient->tckn}}</td>
+                                        <td>{{$patient->latestDailyCheck() ? \Illuminate\Support\Carbon::parse($patient->latestDailyCheck()->check_date)->format('d/m/Y H:i') : ''}}</td>
+                                        <td> <p class="text-danger"> @if(!$patient->isDailyCheckable()) {{$patient->dailyCheckableBlockedMessage()}} Denetim saati uygulanmayacak. </p> @endif</td>
                                     </tr>
                                 @endforeach
 
@@ -127,15 +137,9 @@
                     <div class="form-group row mb-0" style="">
 
                         <div class="col-sm-12 ">
-                            @if($patient->isDailyCheckable())
-                                <button type="submit" class="btn btn-dark ajax_btn">Denetimleri Kaydet</button>
-                                <a href="{{route('patient.index')}}" class="btn btn-default">İptal Et</a>
-                                @else
-                                    <div class="callout callout-danger">
-                                        <h5>Denetim girilemez !</h5>
-                                        <p>{{$patient->dailyCheckableBlockedMessage()}}</p>
-                                    </div>
-                            @endif
+
+                            <button type="submit" class="btn btn-dark ajax_btn">Denetimleri Kaydet</button>
+                            <a href="{{route('patient.index')}}" class="btn btn-default">İptal Et</a>
 
 
                         </div>
