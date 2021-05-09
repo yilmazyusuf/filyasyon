@@ -30,6 +30,7 @@
         $("#has_mutation").bootstrapSwitch();
         $("#pcr_status").bootstrapSwitch();
         $("#contacted_status").bootstrapSwitch();
+        $("#is_visitor").bootstrapSwitch();
 
         $('#is_health_personnel').on('switchChange.bootstrapSwitch', function (event, state) {
             if (state === true) {
@@ -208,7 +209,16 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="col-md-6">
+                            <div class="form-group row">
+                                <label for="is_visitor" class="col-sm-5 col-form-label">Şehir Dışı</label>
+                                <div class="col-sm-7">
+                                    <input type="checkbox" id="is_visitor" name="is_visitor"
+                                           data-on-text="Evet" data-off-text="Hayir" data-on-color="success"
+                                           data-off-color="danger" value="1">
+                                </div>
+                            </div>
                             <div class="form-group row">
                                 <label for="contacted_status" class="col-sm-5 col-form-label">TEMASLI / PCR</label>
                                 <div class="col-sm-7">

@@ -30,6 +30,7 @@
         $("#is_health_personnel").bootstrapSwitch();
         $("#has_mutation").bootstrapSwitch();
         $("#pcr_status").bootstrapSwitch();
+        $("#is_visitor").bootstrapSwitch();
         var contactedSwitch = $("#contacted_status").bootstrapSwitch();
 
         $(document).ready(function () {
@@ -327,12 +328,20 @@
                         <div class="card-body">
                             <div class="col-md-12">
                                 <div class="form-group row">
+                                    <label for="is_visitor" class="col-sm-5 col-form-label">Şehir Dışı</label>
+                                    <div class="col-sm-7">
+                                        <input type="checkbox" id="is_visitor" name="is_visitor"
+                                               data-on-text="Evet" data-off-text="Hayir" data-on-color="success"
+                                               data-off-color="danger" value="1" {{$patient->is_visitor ?'checked':''}}>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
                                     <label for="contacted_status" class="col-sm-5 col-form-label">TEMASLI / PCR</label>
                                     <div class="col-sm-7">
                                         <input type="checkbox" id="contacted_status" name="contacted_status"
                                                data-on-text="Evet" data-off-text="Hayir" data-on-color="success"
                                                data-off-color="danger"
-                                               value="1" {{$patient->contacted_status ?'checked':0}}>
+                                               value="1" {{$patient->contacted_status ?'checked':''}}>
 
                                         <input type="checkbox" id="pcr_status" name="pcr_status"
                                                data-on-text="pozitif" data-off-text="negatif" data-on-color="success"

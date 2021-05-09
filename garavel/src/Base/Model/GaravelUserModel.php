@@ -2,6 +2,7 @@
 
 namespace Garavel\Base\Model;
 
+use App\Models\Neighborhood;
 use App\Models\Village;
 use Garavel\Base\Eloquent\Mutators;
 use Garavel\Base\Eloquent\Scopes;
@@ -37,7 +38,7 @@ class GaravelUserModel extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'village_id',
     ];
 
     /**
@@ -75,6 +76,12 @@ class GaravelUserModel extends Authenticatable
     public function village()
     {
         return $this->belongsTo(Village::class);
+    }
+
+
+    public function neighborhood()
+    {
+        return $this->belongsTo(Neighborhood::class);
     }
 
 

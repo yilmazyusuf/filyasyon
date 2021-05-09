@@ -63,6 +63,7 @@ class UserController extends Controller
         $user->name = $request->get('name');
         $user->email = $request->get('email');
         $user->village_id = $request->get('village_id');
+        $user->neighborhood_id = $request->get('neighborhood_id');
         $user->status = $status;
         $user->save();
 
@@ -89,11 +90,10 @@ class UserController extends Controller
         if (!$user) {
             abort(404);
         }
-
         $permissions = Permission::orderBy('name', 'asc')->get();
         $roles = Role::orderBy('name', 'asc')->get();
 
-        return view('adminlte::users.edit', ['user' => $user, 'roles' => $roles, 'permissions' => $permissions]);
+        return view('adminlte::users.edit', ['person' => $user, 'roles' => $roles, 'permissions' => $permissions]);
     }
 
     public function update(UpdateUserFormRequest $request, $userId)
@@ -115,6 +115,7 @@ class UserController extends Controller
         $user->name = $request->get('name');
         $user->email = $request->get('email');
         $user->village_id = $request->get('village_id');
+        $user->neighborhood_id = $request->get('neighborhood_id');
         $user->status = $status;
         $user->save();
 

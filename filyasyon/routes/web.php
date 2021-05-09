@@ -17,8 +17,7 @@ Auth::routes([
     'verify'   => false, // Email Verification Routes...
 ]);
 
-Route::middleware(['auth'])->group(function ()
-{
+Route::middleware(['auth'])->group(function () {
 
     Route::resource('/users', 'UserController');
     Route::get('/users/index/data_table', 'UserController@indexDataTable')->name('users.index.data_table');
@@ -42,8 +41,6 @@ Route::middleware(['auth'])->group(function ()
     //<editor-fold desc="Districts">
     Route::post('/neighborhoods_by_village/{villageId}', 'DistrictsController@neighborhoodsByVillage')->name('districts.neighborhoods');
     //</editor-fold>
-
-
 
 
 });

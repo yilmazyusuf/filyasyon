@@ -27,6 +27,11 @@ class Patient extends Model
         return $this->belongsTo(Village::class);
     }
 
+    public function neighborhood()
+    {
+        return $this->belongsTo(Neighborhood::class);
+    }
+
     public function dailyChecks()
     {
         return $this->hasMany(DailyCheck::class);
@@ -185,6 +190,22 @@ class Patient extends Model
     {
         if (isset(auth()->user()->village)) {
             return $query->where('village_id', '=', auth()->user()->village->id);
+        }
+
+        return $query;
+    }
+
+    /**
+     * Scope a query to only include popular users.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeUserPatientsByNeighborhood($query)
+    {
+
+        if (isset(auth()->user()->neighborhood)) {
+            return $query->where('neighborhood_id', '=', auth()->user()->neighborhood->id);
         }
 
         return $query;

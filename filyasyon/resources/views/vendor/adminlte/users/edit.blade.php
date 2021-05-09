@@ -32,8 +32,51 @@
 
     <script src="{{ asset('js/jquery.formautofill.js') }}"></script>
     <script>
-        $("#users_edit").autofill({!! $user->toJson() !!});
+
+
+
+        $('#village_id').on('change', function () {
+            if ($(this).val() == '') {
+                return;
+            }
+            var url = '{{ route("districts.neighborhoods", ":village_id") }}';
+            url = url.replace(':village_id', $(this).val());
+            laravel.ajax.send({
+                url: url,
+                type: 'POST',
+                data: {},
+                beforeSend: function () {
+                    $('select#neighborhood_id option:first').text('Mahalleler getiriliyor...');
+                    // @todo select2 text degismiyor
+                },
+                success: function (data) {
+                    $(function () {
+                        $('.select2bs4').select2({
+                            theme: 'bootstrap4'
+                        })
+                    });
+                    $('.neighborhood_holder').html(data.neighborhoods);
+                    var selected = $('select#neighborhood_id option[value="' + {{$person->neighborhood_id}} + '"]');
+                    if (selected.length == 1) {
+                        $('select#neighborhood_id').val({{$person->neighborhood_id}});
+                        $('select#neighborhood_id').trigger('change');
+
+                    }
+                },
+                error: laravel.ajax.errorHandler
+            });
+        });
+
+        $('select#village_id').val({{$person->village_id}});
+        $('select#village_id').trigger('change');
+
+        $("#persons_edit").autofill({!! $person->toJson() !!});
+
+
+
     </script>
+
+
 
 @endpush
 @push('styles')
@@ -54,7 +97,6 @@
     </style>
 @endpush
 @section('content')
-
     <!-- Content Wrapper. Contains page content -->
 
     <!-- Content Header (Page header) -->
@@ -75,7 +117,7 @@
         <!-- Default box -->
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">{{$user->name}}</h3>
+                <h3 class="card-title">{{$person->name}}</h3>
 
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip"
@@ -86,7 +128,7 @@
                         <i class="fas fa-times"></i></button>
                 </div>
             </div>
-            <form class="form-horizontal ajax" id="users_edit" name="users_edit" action="{{route('users.update',[$user->id])}}" method="post">
+            <form class="form-horizontal ajax" id="persons_edit" name="persons_edit" action="{{route('users.update',[$person->id])}}" method="post">
                 @method('PUT')
                 <div class="card-body">
                     <div class="form-group row">
@@ -117,7 +159,7 @@
                             <select class="select2bs4" multiple="multiple" data-placeholder="Rol seçiniz."
                                     style="width: 100%;" name="roles[]" id="roles">
                                 @foreach($roles as $role)
-                                    <option value="{{$role->id}}" {{$user->hasRole($role->id) ? 'selected="selected"' : ''}}>{{$role->name}}</option>
+                                    <option value="{{$role->id}}" {{$person->hasRole($role->id) ? 'selected="selected"' : ''}}>{{$role->name}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -128,7 +170,7 @@
                             <select class="select2bs4" multiple="multiple" data-placeholder="Yetki seçiniz."
                                     style="width: 100%;" name="permissions[]" id="permissions">
                                 @php
-                                    $directPermisssions = $user->getDirectPermissions();
+                                    $directPermisssions = $person->getDirectPermissions();
                                 @endphp
 
                                 @endphp
@@ -143,6 +185,17 @@
                         <label for="village_id" class="col-sm-3 col-form-label">Mahalle/Köy</label>
                         <div class="col-sm-4">
                             {{viewHelper(\App\ViewHelpers\SelectBox\VillagesSelectBox::class)}}
+                            <small id="emailHelp" class="form-text text-muted">Merkez mahalleler için
+                                MERKEZ-MERKEZ seçiniz.</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="neighborhood_id" class="col-sm-3 col-form-label">Mahalle</label>
+                        <div class="col-sm-4 neighborhood_holder">
+                            <select class="form-control" id="neighborhood_id" name="neighborhood_id">
+                                <option>Mahalle/Köy Seçiniz</option>
+                            </select>
                         </div>
                     </div>
 
@@ -150,9 +203,9 @@
                         <label for="status" class="col-sm-3 col-form-label">Durumu</label>
                         <div class="col-sm-4 pt-2">
                             <input type="checkbox" name="status"
-                                   {{$user->status == 1 ? 'checked' :''}} data-bootstrap-switch
+                                   {{$person->status == 1 ? 'checked' :''}} data-bootstrap-switch
                                    data-off-color="danger" data-on-color="success" data-on-text="Aktif"
-                                   data-off-text="Pasif" id="status" value="{{$user->status}}">
+                                   data-off-text="Pasif" id="status" value="{{$person->status}}">
                             <small id="emailHelp" class="form-text text-muted">Pasif kullanıcılar sisteme giriş
                                 yapamaz.</small>
                         </div>
@@ -163,8 +216,8 @@
                     <div class="form-group row mb-0">
                         <label for="buttons" class="col-sm-3 col-form-label"></label>
                         <div class="col-sm-4">
-                            <button type="submit" class="btn btn-dark ajax_btn">Güncelle</button>
-                            <a href="{{route('users.index')}}" class="btn btn-default">İptal Et</a>
+                            <button type="submit" class="btn btn-dark ajax_btn">güncelle</button>
+                            <a href="{{route('users.index')}}" class="btn btn-default">i̇ptal et</a>
                         </div>
                     </div>
 

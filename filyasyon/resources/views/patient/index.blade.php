@@ -7,7 +7,7 @@
     <!-- DataTables -->
     <script src="{{ asset('vendor/adminlte/plugins/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('vendor/adminlte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('js/data_table.js?v=9') }}"></script>
+    <script src="{{ asset('js/data_table.js?v=11') }}"></script>
     <script>
 
         $(document).ready(function () {
@@ -145,6 +145,7 @@
                                 <th>T.C</th>
                                 <th>Yaş</th>
                                 <th>Telefon</th>
+                                <th>Mahalle/Köy</th>
                                 <th>Mahalle</th>
                                 <th>Poz.-Tem.</th>
                                 <th>Durumu</th>
@@ -157,12 +158,21 @@
                             <tbody></tbody>
                         </table>
                         <div class="btn-group" role="group" aria-label="Select, Unselect Patients">
-                            <button type="button" class="btn btn btn-default btn-flat patients_select"><i
+                            <button type="button" class="btn btn btn-default btn-sm  btn-flat patients_select"><i
                                     class="fas fa-check-circle"></i> Tümünü Seç
                             </button>
-                            <button type="button" class="btn btn-default btn-flat patients_unselect"><i
+                            <button type="button" class="btn btn-default btn-sm  btn-flat patients_unselect"><i
                                     class="far fa-check-circle"></i> Seçimleri Kaldır
                             </button>
+                        </div>
+
+                        <div class="btn-group" role="group" aria-label="Select, Unselect Patients">
+
+                            @can('daily_checks')
+                                <button type="button" class="btn btn-dark btn-sm btn-flat batch_daily_checks" disabled>
+                                    <i class="fa fas fa-user-check"></i> Toplu Denetim Ekle
+                                </button>
+                            @endcan
                         </div>
                     </div>
                 </div>

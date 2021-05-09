@@ -82,7 +82,9 @@ class PatientController extends Controller
         $archive->archive = json_encode($patient);
         $archive->save();
 
+
         $detectionDateRequest = $request->get('detection_date');
+        $isVisitor = $request->is_visitor ?? false;
         $pcrStatus = $request->pcr_status ?? false;
         $contactedStatus = $request->contacted_status ?? false;
         $hasMutation = $request->has_mutation ?? false;
@@ -103,6 +105,7 @@ class PatientController extends Controller
         $request->request->set('has_mutation', $hasMutation);
         $request->request->set('pcr_status', $pcrStatus);
         $request->request->set('contacted_status', $contactedStatus);
+        $request->request->set('is_visitor', $isVisitor);
 
         $requestData = $request->except(['extended_qurantine_end_days']);
         $patient->fill($requestData);
@@ -122,14 +125,15 @@ class PatientController extends Controller
         $detectionDate = $request->get('detection_date');
         $pcrStatus = $request->request->get('pcr_status');
         $contactedStatus = $request->request->get('contacted_status');
+        $isVisitor = $request->request->get('is_visitor');
 
 
         /*
-        PCR 7 Gun Karantina Suresi
+        PCR 10 Gun Karantina Suresi
         Temasli 10 Gun Karantina
         */
         $now = Carbon::now();
-        $quarantinePeriod = $pcrStatus ? 10 : 10;
+        $quarantinePeriod = $isVisitor ? 7 : 10;
         $quarantineStartDate = $now;
         if ($detectionDate) {
             $quarantineStartDate = Carbon::createFromFormat('d/m/Y', $detectionDate);
@@ -142,7 +146,7 @@ class PatientController extends Controller
         $patientModel->save();
 
         $ajax = new Ajax();
-        $request->session()->flash(FlashMessageViewComposer::MESSAGE_SUCCESS, 'Yeni kasta kayıt işlemi yapıldı.');
+        $request->session()->flash(FlashMessageViewComposer::MESSAGE_SUCCESS, 'Yeni hasta kayıt işlemi yapıldı.');
 
         return $ajax->redirect(route('patient.index'));
     }
@@ -151,7 +155,9 @@ class PatientController extends Controller
     public function indexDataTable(Request $request)
     {
 
-        $patients = Patient::with(['patientStatus', 'village', 'dailyChecks'])->userPatientsByVillage();
+        $patients = Patient::with(['patientStatus', 'village','neighborhood', 'dailyChecks'])
+            ->userPatientsByVillage()
+            ->userPatientsByNeighborhood();
 
         if (request()->has('order') === false) {
             $patients = $patients->orderByRaw("FIELD(patient_status_id,1,2,3,4,5,6,7,8)");

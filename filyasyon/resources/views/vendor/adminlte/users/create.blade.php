@@ -25,6 +25,36 @@
         $('input#status').on('switchChange.bootstrapSwitch', function (event, state) {
             $(this).val(state === true ? 1 : 0);
         });
+
+
+        $('#village_id').on('change', function () {
+            if($(this).val() == ''){
+                return;
+            }
+            var url = '{{ route("districts.neighborhoods", ":village_id") }}';
+            url = url.replace(':village_id', $(this).val());
+            laravel.ajax.send({
+                url: url,
+                type: 'POST',
+                data: {},
+                beforeSend:function () {
+                    $('select#neighborhood_id option:first').text('Mahalleler getiriliyor...');
+                    // @todo select2 text degismiyor
+                },
+                success: function (data) {
+                    $(function () {
+                        $('.select2bs4').select2({
+                            theme: 'bootstrap4'
+                        })
+                    });
+                    $('.neighborhood_holder').html(data.neighborhoods);
+                },
+                error: laravel.ajax.errorHandler
+            });
+        });
+
+        $('select#village_id').val(21128); //Merkez-Merkez
+        $('select#village_id').trigger('change');
     </script>
 
 @endpush
@@ -127,9 +157,18 @@
                         <label for="village_id" class="col-sm-3 col-form-label">Mahalle/Köy</label>
                         <div class="col-sm-4">
                             {{viewHelper(\App\ViewHelpers\SelectBox\VillagesSelectBox::class)}}
+                            <small id="emailHelp" class="form-text text-muted">Merkez mahalleler için MERKEZ-MERKEZ seçiniz.</small>
                         </div>
                     </div>
 
+                    <div class="form-group row">
+                        <label for="neighborhood_id" class="col-sm-3 col-form-label">Mahalle</label>
+                        <div class="col-sm-4 neighborhood_holder">
+                            <select class="form-control" id="neighborhood_id" name="neighborhood_id">
+                                <option>Mahalle/Köy Seçiniz</option>
+                            </select>
+                        </div>
+                    </div>
 
 
                     <div class="form-group row">

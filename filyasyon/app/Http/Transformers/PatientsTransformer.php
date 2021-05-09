@@ -19,62 +19,64 @@ class PatientsTransformer extends TransformerAbstract
 
         $actionButtons = [
             'edit' => [
-                'url' => route('patient.edit', [$patient->id]),
-                'icon_class' => 'fa-edit',
-                'tooltip' => 'Düzenle',
+                'url'                 => route('patient.edit', [$patient->id]),
+                'icon_class'          => 'fa-edit',
+                'tooltip'             => 'Düzenle',
                 'required_permission' => 'patient_update',
             ],
 
-            'copy' => [
-                'url' => route('patient.edit', [$patient->id]),
-                'icon_class' => 'far fa-copy',
-                'tooltip' => 'Kopyala',
+            'copy'         => [
+                'url'                 => route('patient.edit', [$patient->id]),
+                'icon_class'          => 'far fa-copy',
+                'tooltip'             => 'Kopyala',
                 'required_permission' => 'patient_update',
             ],
-            'vaccines' => [
-                'url' => route('patient.vaccines', [$patient->id]),
-                'icon_class' => 'fas fa-syringe',
-                'tooltip' => 'Aşılar',
+            'vaccines'     => [
+                'url'                 => route('patient.vaccines', [$patient->id]),
+                'icon_class'          => 'fas fa-syringe',
+                'tooltip'             => 'Aşılar',
                 'required_permission' => 'vaccines',
 
 
             ],
             'daily_checks' => [
-                'url' => route('patient.daily_checks', [$patient->id]),
-                'icon_class' => 'fas fa-user-check',
-                'tooltip' => 'Denetimler',
+                'url'                 => route('patient.daily_checks', [$patient->id]),
+                'icon_class'          => 'fas fa-user-check',
+                'tooltip'             => 'Denetimler',
                 'required_permission' => 'daily_checks',
             ]
         ];
 
 
-
         $lastCheckDate = $patient->latestDailyCheck() ? Carbon::parse($patient->latestDailyCheck()->check_date)->format('d/m/Y H:i') : null;
-        $vaccinesLast = $patient->vaccines()->orderBy('vaccination_date','desc')->first();
+        $vaccinesLast = $patient->vaccines()->orderBy('vaccination_date', 'desc')->first();
 
         return [
-            'patient_id' => (string)$patient->id,
-            'name' => (string)$patient->name,
-            'tckn' => (int)$patient->tckn,
-            'age' => (int)$patient->age,
-            'gsm' => (string)$patient->gsm,
-            'village' => [
+            'patient_id'            => (string)$patient->id,
+            'name'                  => (string)$patient->name,
+            'tckn'                  => (int)$patient->tckn,
+            'age'                   => (int)$patient->age,
+            'gsm'                   => (string)$patient->gsm,
+            'village'               => [
                 'name' => $patient->village->name ?? null
             ],
-            'positive_or_contacted' => $patient->pcr_status ? 'P': ($patient->contacted_status ? 'T' : '-'),
-            'patientStatus' => [
+            'neighborhood'               => [
+                'name' => $patient->neighborhood->name ?? null
+            ],
+            'positive_or_contacted' => $patient->pcr_status ? 'P' : ($patient->contacted_status ? 'T' : '-'),
+            'patientStatus'         => [
                 'name' => $patient->patientStatus->name ?? null,
-                'id' => $patient->patientStatus->id ?? null
+                'id'   => $patient->patientStatus->id ?? null
             ],
 
-            'dailyChecks' => [
+            'dailyChecks'      => [
                 'check_date' => $lastCheckDate
             ],
-            'vaccines' => [
+            'vaccines'         => [
                 'last_vaccines_date' => $vaccinesLast->vaccination_date ?? null
             ],
             'quarantine_dates' => $patient->quarantine_dates,
-            'action' => (string)$template = view()->make('adminlte::partials.btn_group', ['buttons' => $actionButtons])->render()
+            'action'           => (string)$template = view()->make('adminlte::partials.btn_group', ['buttons' => $actionButtons])->render()
         ];
     }
 }
