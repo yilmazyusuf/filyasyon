@@ -34,7 +34,7 @@ class Patient extends Model
 
     public function dailyChecks()
     {
-        return $this->hasMany(DailyCheck::class);
+        return $this->hasMany(DailyCheck::class,'patient_id');
     }
 
     public function latestDailyCheck()
@@ -128,9 +128,14 @@ class Patient extends Model
 
     public function getQuarantineDatesAttribute()
     {
-
         return Carbon::parse($this->quarantine_start_date)->formatLocalized('%d %B') . ' - ' .
             Carbon::parse($this->quarantine_end_date)->formatLocalized('%d %B');
+    }
+
+    public function getQuarantineDatesDmyAttribute()
+    {
+        return Carbon::parse($this->quarantine_start_date)->formatLocalized('%d/%m/%Y') . ' - ' .
+            Carbon::parse($this->quarantine_end_date)->formatLocalized('%d/%m/%Y');
     }
 
     public function getExDateAttribute($value)

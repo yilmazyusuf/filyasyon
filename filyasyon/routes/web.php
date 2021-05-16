@@ -26,6 +26,10 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/patient', 'PatientController');
     Route::get('/patient/index/data_table', 'PatientController@indexDataTable')->name('patient.index.data_table');
 
+
+    Route::resource('/report', 'ReportController');
+    Route::get('/report/index/data_table', 'ReportController@indexDataTable')->name('report.index.data_table');
+
     Route::get('/patient/{id}/daily_checks', 'PatientController@dailyChecks')->name('patient.daily_checks');
     Route::post('/patient/{id}/daily_checks', 'PatientController@saveDailyChecks')->name('patient.daily_checks.save');
 

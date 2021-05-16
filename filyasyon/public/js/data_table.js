@@ -29,7 +29,7 @@ let DataTable = {
             "columns": [
                 {"data": "name", "orderable": true,},
                 {"data": "email", "orderable": true},
-                {"data": "village.name","name":"village.name", "orderable": true},
+                {"data": "village.name", "name": "village.name", "orderable": true},
                 {"data": "status", "orderable": true, "searchable": false},
                 {"data": "roles", "orderable": false, "searchable": false},
                 {"data": "permissions", "orderable": false, "searchable": false},
@@ -111,7 +111,7 @@ let DataTable = {
             "oLanguage": {
                 "sUrl": this.getLanguageFileUrl()
             },
-            "drawCallback": function( settings ) {
+            "drawCallback": function (settings) {
                 $('[data-toggle="tooltip"]').tooltip();
             },
             responsive: true,
@@ -140,29 +140,144 @@ let DataTable = {
                 {"data": "gsm", "orderable": false, "searchable": true},
                 {"data": "village.name", "name": "village.name", "orderable": true, "searchable": true},
                 {"data": "neighborhood.name", "name": "neighborhood.name", "orderable": true, "searchable": true},
-                {"data": "positive_or_contacted", "name": "positive_or_contacted", "orderable": true, "searchable": true},
+                {
+                    "data": "positive_or_contacted",
+                    "name": "positive_or_contacted",
+                    "orderable": true,
+                    "searchable": true
+                },
                 {"data": "patientStatus.name", "name": "patientStatus.name", "orderable": true, "searchable": true},
-                {"data": "dailyChecks.check_date", "name": "dailyChecks.check_date", "orderable": true, "searchable": true},
-                {"data": "vaccines.last_vaccines_date", "name": "vaccines.last_vaccines_date", "orderable": true, "searchable": true},
+                {
+                    "data": "dailyChecks.check_date",
+                    "name": "dailyChecks.check_date",
+                    "orderable": true,
+                    "searchable": true
+                },
+                {
+                    "data": "vaccines.last_vaccines_date",
+                    "name": "vaccines.last_vaccines_date",
+                    "orderable": true,
+                    "searchable": true
+                },
                 {"data": "quarantine_dates", "name": "quarantine_dates", "orderable": true, "searchable": true},
                 {"data": "action", "orderable": false, "searchable": false},
             ],
             "initComplete": function (settings, json) {
 
             },
-            "createdRow": function(row, data, dataIndex) {
+            "createdRow": function (row, data, dataIndex) {
                 $(row).attr('patient_id', data.patient_id);
 
                 var patient_status = data.patientStatus.id;
                 if (patient_status == 7) {
                     $(row).css("background-color", "rgb(61 153 112 / 20%)");
-                }
-                else if (patient_status == 6) {
+                } else if (patient_status == 6) {
                     $(row).css("background-color", "rgb(253 126 20 / 20%)");
-                }
-                else if (patient_status == 8) {
+                } else if (patient_status == 8) {
                     $(row).css("background-color", "rgb(220 53 69 / 20%)");
-                }else {
+                } else {
+                    $(row).css("background-color", "rgb(255 193 7 / 20%)");
+                }
+            }
+        });
+
+    },
+    getReports: function (ajaxUrl) {
+        var patients_table = $("#patients_data_table").DataTable({
+            "oLanguage": {
+                "sUrl": this.getLanguageFileUrl()
+            },
+            "drawCallback": function (settings) {
+                $('[data-toggle="tooltip"]').tooltip();
+            },
+            buttons: [
+                {
+                    extend: 'pdfHtml5',
+                    orientation: 'landscape',
+                    text: '<i class="far fa-file-pdf"></i> Pdf',
+                },
+                {
+                    extend: 'excelHtml5',
+                    orientation: 'landscape',
+                    text: '<i class="far fa-file-excel"></i> Excel',
+                },
+                {
+                    extend: 'csvHtml5',
+                    orientation: 'landscape',
+                    text: '<i class="far fa-file-pdf"></i> Csv',
+                },
+                {
+                    extend: 'copyHtml5',
+                    orientation: 'landscape',
+                    text: '<i class="far fa-copy"></i> Kopyala',
+                },
+                {
+                    extend: 'print',
+                    orientation: 'landscape',
+                    text: '<i class="fas fa-print"></i> Yazdır',
+                }
+            ],
+            responsive: true,
+            bAutoWidth: false,
+            "dom": 'Bfrtip',
+            "pageLength": 500,
+            "searchDelay": 1500,
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": ajaxUrl,
+                data: function (d) {
+                },
+                dataSrc: function (json) {
+                    if (!json.recordsTotal) {
+                        return false;
+                    }
+                    return json.data;
+                }
+            },
+            "order": [],
+            "columns": [
+                {"data": "name", "orderable": true,},
+                {"data": "tckn", "orderable": false},
+                {"data": "age", "orderable": true, "searchable": false},
+                {"data": "gsm", "orderable": false, "searchable": true},
+                {"data": "village.name", "name": "village.name", "orderable": true, "searchable": true},
+                {"data": "neighborhood.name", "name": "neighborhood.name", "orderable": true, "searchable": true},
+                {
+                    "data": "positive_or_contacted",
+                    "name": "positive_or_contacted",
+                    "orderable": true,
+                    "searchable": true
+                },
+                {"data": "patientStatus.name", "name": "patientStatus.name", "orderable": true, "searchable": true},
+                {
+                    "data": "dailyChecks.check_date",
+                    "name": "dailyChecks.check_date",
+                    "orderable": true,
+                    "searchable": true
+                },
+                {
+                    "data": "vaccines.last_vaccines_date",
+                    "name": "vaccines.last_vaccines_date",
+                    "orderable": true,
+                    "searchable": true
+                },
+                {"data": "quarantine_dates", "name": "quarantine_dates", "orderable": true, "searchable": true},
+            ],
+            "initComplete": function (settings, json) {
+
+            },
+            "createdRow": function (row, data, dataIndex) {
+                $(row).attr('patient_id', data.patient_id);
+
+                var patient_status = data.patientStatus.id;
+                if (patient_status == 7) {
+                    $(row).css("background-color", "rgb(61 153 112 / 20%)");
+                } else if (patient_status == 6) {
+                    $(row).css("background-color", "rgb(253 126 20 / 20%)");
+                } else if (patient_status == 8) {
+                    $(row).css("background-color", "rgb(220 53 69 / 20%)");
+                } else {
                     $(row).css("background-color", "rgb(255 193 7 / 20%)");
                 }
             }
